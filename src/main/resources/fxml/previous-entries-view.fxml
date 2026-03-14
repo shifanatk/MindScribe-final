@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.layout.BorderPane?>
+
+<VBox spacing="20" alignment="CENTER" styleClass="glass-container" 
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.mindscribe.PreviousEntriesController">
+    
+    <!-- Header -->
+    <VBox spacing="10" alignment="CENTER">
+        <Label text="📚 Previous Entries" styleClass="title-text" />
+        <Label text="Review all your journal entries and insights" styleClass="caption-text" />
+        <HBox spacing="15" alignment="CENTER">
+            <TextField fx:id="searchField" promptText="Search entries..." prefWidth="200" styleClass="search-input" />
+            <ComboBox fx:id="moodFilter" prefWidth="150" styleClass="filter-combo" />
+            <Button fx:id="filterButton" styleClass="glass-button" text="🔍 Filter" />
+        </HBox>
+    </VBox>
+    
+    <!-- Entries Table -->
+    <VBox spacing="15" maxWidth="900">
+        <TableView fx:id="entriesTable" prefHeight="400" styleClass="entries-table">
+            <columns>
+                <TableColumn fx:id="dateColumn" text="Date" prefWidth="120" />
+                <TableColumn fx:id="moodColumn" text="Mood" prefWidth="100" />
+                <TableColumn fx:id="contentColumn" text="Content" prefWidth="400" />
+                <TableColumn fx:id="sentimentColumn" text="Sentiment" prefWidth="100" />
+                <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="150" />
+            </columns>
+        </TableView>
+        
+        <!-- Entry Details -->
+        <VBox fx:id="entryDetails" styleClass="entry-details" visible="false" spacing="10">
+            <Separator />
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label text="📖 Entry Details" styleClass="subtitle-text" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Button fx:id="closeDetailsButton" styleClass="glass-button" text="✖ Close" />
+            </HBox>
+            
+            <VBox spacing="8">
+                <HBox spacing="15">
+                    <Label fx:id="detailDateLabel" styleClass="body-text" />
+                    <Label fx:id="detailMoodLabel" styleClass="body-text" />
+                    <Label fx:id="detailSentimentLabel" styleClass="body-text" />
+                </HBox>
+                <TextArea fx:id="detailContentArea" editable="false" prefHeight="150" styleClass="detail-text-area" />
+                <HBox spacing="10">
+                    <Button fx:id="editEntryButton" styleClass="glass-button" text="✏️ Edit" />
+                    <Button fx:id="deleteEntryButton" styleClass="glass-button, danger" text="🗑️ Delete" />
+                    <Button fx:id="analyzeEntryButton" styleClass="glass-button, ai-highlight" text="🤖 Analyze" />
+                </HBox>
+            </VBox>
+        </VBox>
+        
+        <!-- Action Buttons -->
+        <HBox spacing="15" alignment="CENTER">
+            <Button fx:id="loadMoreButton" styleClass="glass-button" text="📄 Load More" prefWidth="120" />
+            <Button fx:id="exportButton" styleClass="glass-button" text="📥 Export All" prefWidth="120" />
+            <Button fx:id="backButton" styleClass="glass-button" text="🏠 Back to Home" prefWidth="150" />
+        </HBox>
+        
+        <!-- Status Message -->
+        <Label fx:id="statusLabel" styleClass="status-text" wrapText="true" />
+    </VBox>
+    
+</VBox>

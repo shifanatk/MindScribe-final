@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.chart.AreaChart?>
+<?import javafx.scene.chart.NumberAxis?>
+
+<VBox spacing="25" alignment="CENTER" styleClass="glass-container" 
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.mindscribe.MoodDashboardController">
+    
+    <!-- Header -->
+    <VBox spacing="10" alignment="CENTER">
+        <Label text="📊 Mood Dashboard" styleClass="title-text" />
+        <Label text="Track your emotional patterns and trends" styleClass="caption-text" />
+        <Label fx:id="dateRangeLabel" styleClass="body-text" />
+    </VBox>
+    
+    <!-- Dashboard Content -->
+    <VBox spacing="20" maxWidth="800">
+        <!-- Mood Distribution -->
+        <VBox spacing="10" styleClass="dashboard-card">
+            <Label text="Mood Distribution" styleClass="subtitle-text" />
+            <PieChart fx:id="moodPieChart" legendVisible="false" prefHeight="250" />
+        </VBox>
+        
+        <!-- Sentiment Trends -->
+        <VBox spacing="10" styleClass="dashboard-card">
+            <Label text="Sentiment Trends (Last 7 Days)" styleClass="subtitle-text" />
+            <AreaChart fx:id="sentimentAreaChart" prefHeight="200" legendVisible="false">
+                <xAxis>
+                    <NumberAxis label="Days" tickUnit="1" />
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Sentiment" />
+                </yAxis>
+            </AreaChart>
+        </VBox>
+        
+        <!-- Statistics -->
+        <HBox spacing="20" alignment="CENTER">
+            <VBox spacing="5" styleClass="stat-card">
+                <Label fx:id="totalEntriesLabel" text="0" styleClass="stat-number" />
+                <Label text="Total Entries" styleClass="stat-label" />
+            </VBox>
+            <VBox spacing="5" styleClass="stat-card">
+                <Label fx:id="avgSentimentLabel" text="0.0" styleClass="stat-number" />
+                <Label text="Avg Sentiment" styleClass="stat-label" />
+            </VBox>
+            <VBox spacing="5" styleClass="stat-card">
+                <Label fx:id="dominantMoodLabel" text="-" styleClass="stat-number" />
+                <Label text="Dominant Mood" styleClass="stat-label" />
+            </VBox>
+        </HBox>
+        
+        <!-- Action Buttons -->
+        <HBox spacing="15" alignment="CENTER">
+            <Button fx:id="refreshButton" styleClass="glass-button" text="🔄 Refresh" prefWidth="120" />
+            <Button fx:id="exportButton" styleClass="glass-button" text="📥 Export Data" prefWidth="120" />
+            <Button fx:id="backButton" styleClass="glass-button" text="🏠 Back to Home" prefWidth="150" />
+        </HBox>
+        
+        <!-- Status Message -->
+        <Label fx:id="statusLabel" styleClass="status-text" wrapText="true" />
+    </VBox>
+    
+</VBox>

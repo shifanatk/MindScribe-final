@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="25" alignment="CENTER" styleClass="glass-container" 
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.mindscribe.WriteJournalController">
+    
+    <!-- Header -->
+    <VBox spacing="10" alignment="CENTER">
+        <Label text="📝 Write Your Journal" styleClass="title-text" />
+        <Label text="Share your thoughts, feelings, and experiences" styleClass="caption-text" />
+        <Label fx:id="dateLabel" styleClass="body-text" />
+    </VBox>
+    
+    <!-- Journal Entry Form -->
+    <VBox spacing="15" maxWidth="600">
+        <VBox spacing="8">
+            <Label text="Share your thoughts and feelings" styleClass="body-text" />
+            <TextArea fx:id="journalEditor" 
+                     styleClass="journal-input" 
+                     prefWidth="600" 
+                     prefHeight="300"
+                     promptText="Share your thoughts, feelings, and experiences..." />
+        </VBox>
+        
+        <!-- Action Buttons -->
+        <HBox spacing="15" alignment="CENTER">
+            <Button fx:id="saveButton" styleClass="glass-button" text="💾 Save Entry" prefWidth="150" />
+            <Button fx:id="analyzeButton" styleClass="glass-button, ai-highlight" text="🤖 AI Analyze" prefWidth="150" />
+            <Button fx:id="backButton" styleClass="glass-button" text="🏠 Back to Home" prefWidth="150" />
+        </HBox>
+        
+        <!-- Status Messages -->
+        <Label fx:id="statusLabel" styleClass="status-text" wrapText="true" />
+        
+        <!-- AI Analysis Result -->
+        <VBox fx:id="analysisResult" styleClass="analysis-container" visible="false" spacing="10">
+            <Label text="🤖 AI Analysis" styleClass="subtitle-text" />
+            <Label fx:id="sentimentLabel" styleClass="body-text" />
+            <Label fx:id="insightLabel" styleClass="body-text" wrapText="true" />
+        </VBox>
+    </VBox>
+    
+</VBox>

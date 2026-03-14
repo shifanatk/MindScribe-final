@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.PasswordField?>
+
+<VBox spacing="20" alignment="CENTER" styleClass="glass-container" 
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.mindscribe.LoginController">
+    
+    <!-- Header -->
+    <Label text="🧠 MindScribe" style="-fx-font-size: 28px; -fx-font-weight: 700; -fx-text-fill: #E2E8F0;" />
+    <Label text="Your Digital Journal Companion" style="-fx-font-size: 14px; -fx-text-fill: #9CA3AF;" />
+    
+    <!-- Login Form -->
+    <VBox spacing="15" alignment="CENTER" styleClass="glass-surface">
+        <TextField fx:id="usernameField" promptText="Username" prefWidth="250" styleClass="text-input" />
+        <PasswordField fx:id="passwordField" promptText="Password" prefWidth="250" styleClass="text-input" />
+        
+        <Button fx:id="loginButton" text="🔐 Login" styleClass="glass-button" prefWidth="200" />
+        
+        <Label fx:id="errorLabel" styleClass="error-label" wrapText="true" visible="false" />
+        
+        <HBox spacing="10" alignment="CENTER">
+            <Hyperlink fx:id="signupLink" text="Don't have an account? Sign up" styleClass="hyperlink" />
+        </HBox>
+    </VBox>
+    
+</VBox>
