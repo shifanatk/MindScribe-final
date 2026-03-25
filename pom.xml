@@ -121,6 +121,7 @@
                         <artifactId>spring-boot-maven-plugin</artifactId>
                         <configuration>
                             <mainClass>com.mindscribe.MindscribeBackendApplication</mainClass>
+                            <fork>false</fork>
                         </configuration>
                     </plugin>
                 </plugins>

@@ -20,6 +20,14 @@ public class AnalyticsController {
     @Autowired
     private JournalRepository journalRepository;
 
+    @GetMapping("/health")
+    public ResponseEntity<?> health() {
+        Map<String, String> response = new HashMap<>();
+        response.put("status", "UP");
+        response.put("service", "Analytics API");
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/mood-distribution")
     public ResponseEntity<?> getMoodDistribution(@RequestParam(required = false) String username) {
         try {

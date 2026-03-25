@@ -3,7 +3,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.ScrollPane?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.chart.AreaChart?>
@@ -13,21 +12,45 @@
             xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
             fx:controller="com.mindscribe.MoodDashboardController">
     
-    <VBox spacing="25" alignment="CENTER" maxWidth="1000">
+    <VBox spacing="25" alignment="CENTER" maxWidth="1200" style="-fx-padding: 20;">
     
-    <!-- Header -->
-    <VBox spacing="10" alignment="CENTER">
+    <!-- Enhanced Header -->
+    <VBox spacing="15" alignment="CENTER" styleClass="glass-surface">
         <Label text="📊 Mood Dashboard" styleClass="title-text" />
         <Label text="Track your emotional patterns and trends" styleClass="caption-text" />
-        <Label fx:id="dateRangeLabel" styleClass="body-text" />
+        <HBox spacing="20" alignment="CENTER">
+            <Label fx:id="dateRangeLabel" styleClass="body-text" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Label fx:id="statusLabel" styleClass="status-text" />
+        </HBox>
     </VBox>
     
-    <!-- Dashboard Content -->
-    <VBox spacing="30" maxWidth="1000">
-        <!-- Mood Distribution -->
+    <!-- Enhanced Dashboard Content -->
+    <VBox spacing="30" maxWidth="1200">
+        
+        <!-- Quick Stats Row -->
+        <HBox spacing="20" alignment="CENTER">
+            <VBox spacing="12" alignment="CENTER" styleClass="stat-card">
+                <Label fx:id="totalEntriesLabel" text="0" styleClass="stat-number" />
+                <Label text="📝 Total Entries" styleClass="stat-label" />
+                <Label text="All time" styleClass="caption-text" />
+            </VBox>
+            <VBox spacing="12" alignment="CENTER" styleClass="stat-card">
+                <Label fx:id="avgSentimentLabel" text="0.0" styleClass="stat-number" />
+                <Label text="💭 Avg Sentiment" styleClass="stat-label" />
+                <Label text="Overall mood" styleClass="caption-text" />
+            </VBox>
+            <VBox spacing="12" alignment="CENTER" styleClass="stat-card">
+                <Label fx:id="dominantMoodLabel" text="-" styleClass="stat-number" />
+                <Label text="😊 Dominant Mood" styleClass="stat-label" />
+                <Label text="Most frequent" styleClass="caption-text" />
+            </VBox>
+        </HBox>
+        
+        <!-- Mood Distribution with Enhanced Layout -->
         <VBox spacing="20" styleClass="dashboard-card">
             <HBox spacing="15" alignment="CENTER_LEFT">
-                <Label text="📊" style="-fx-font-size: 24px; -fx-text-fill: #A5B4FC;" />
+                <Label text="📊" style="-fx-font-size: 28px; -fx-text-fill: #A5B4FC;" />
                 <VBox spacing="5">
                     <Label text="Mood Distribution" styleClass="subtitle-text" />
                     <Label text="Your emotional breakdown over time" styleClass="caption-text" />
@@ -35,22 +58,35 @@
                 <Region HBox.hgrow="ALWAYS" />
                 <Label text="Last 30 days" styleClass="caption-text" />
             </HBox>
-            <PieChart fx:id="moodPieChart" legendVisible="true" prefHeight="300" 
-                     styleClass="chart-pie" legendSide="BOTTOM" />
+            <HBox spacing="30" alignment="CENTER">
+                <PieChart fx:id="moodPieChart" legendVisible="true" prefHeight="320" prefWidth="400"
+                         styleClass="chart-pie" legendSide="BOTTOM" />
+                <VBox spacing="15" HBox.hgrow="ALWAYS" alignment="CENTER">
+                    <Label text="🎯 Key Insights" styleClass="subtitle-text" />
+                    <VBox spacing="10" styleClass="glass-surface">
+                        <Label text="Positive entries contribute to emotional resilience" 
+                               styleClass="body-text" wrapText="true" />
+                        <Label text="Regular journaling improves emotional awareness" 
+                               styleClass="body-text" wrapText="true" />
+                        <Label text="Tracking patterns helps identify triggers" 
+                               styleClass="body-text" wrapText="true" />
+                    </VBox>
+                </VBox>
+            </HBox>
         </VBox>
         
-        <!-- Sentiment Trends -->
+        <!-- Enhanced Sentiment Trends -->
         <VBox spacing="20" styleClass="dashboard-card">
             <HBox spacing="15" alignment="CENTER_LEFT">
-                <Label text="📈" style="-fx-font-size: 24px; -fx-text-fill: #A5B4FC;" />
+                <Label text="📈" style="-fx-font-size: 28px; -fx-text-fill: #A5B4FC;" />
                 <VBox spacing="5">
-                    <Label text="Sentiment Trends" styleClass="subtitle-text" />
+                    <Label text="Sentiment Trends Analysis" styleClass="subtitle-text" />
                     <Label text="Daily emotional patterns over the last week" styleClass="caption-text" />
                 </VBox>
                 <Region HBox.hgrow="ALWAYS" />
-                <Label text="7-day view" styleClass="caption-text" />
+                <Label text="7-day detailed view" styleClass="caption-text" />
             </HBox>
-            <AreaChart fx:id="sentimentAreaChart" prefHeight="280" legendVisible="true" 
+            <AreaChart fx:id="sentimentAreaChart" prefHeight="320" legendVisible="true" 
                       styleClass="chart-area" createSymbols="true">
                 <xAxis>
                     <NumberAxis label="Days" tickUnit="1" minorTickVisible="false" 
@@ -63,18 +99,18 @@
             </AreaChart>
         </VBox>
         
-        <!-- Monthly Trends -->
+        <!-- Enhanced Monthly Overview -->
         <VBox spacing="20" styleClass="dashboard-card">
             <HBox spacing="15" alignment="CENTER_LEFT">
-                <Label text="📅" style="-fx-font-size: 24px; -fx-text-fill: #A5B4FC;" />
+                <Label text="📅" style="-fx-font-size: 28px; -fx-text-fill: #A5B4FC;" />
                 <VBox spacing="5">
-                    <Label text="Monthly Overview" styleClass="subtitle-text" />
+                    <Label text="Monthly Performance" styleClass="subtitle-text" />
                     <Label text="Your emotional journey this month" styleClass="caption-text" />
                 </VBox>
                 <Region HBox.hgrow="ALWAYS" />
                 <Label fx:id="currentMonthLabel" text="Current month" styleClass="caption-text" />
             </HBox>
-            <HBox spacing="20" alignment="CENTER">
+            <HBox spacing="25" alignment="CENTER">
                 <VBox spacing="12" alignment="CENTER" styleClass="stat-card">
                     <Label fx:id="monthEntriesLabel" text="0" styleClass="stat-number" />
                     <Label text="📝 Entries" styleClass="stat-label" />
@@ -98,37 +134,25 @@
             </HBox>
         </VBox>
         
-        <!-- Statistics Cards -->
-        <HBox spacing="25" alignment="CENTER">
-            <VBox spacing="12" alignment="CENTER" styleClass="stat-card">
-                <Label fx:id="totalEntriesLabel" text="0" styleClass="stat-number" />
-                <Label text="📝 Total Entries" styleClass="stat-label" />
-                <Label text="All time" styleClass="caption-text" />
+        <!-- Enhanced Action Section -->
+        <VBox spacing="20" styleClass="dashboard-card">
+            <Label text="🎯 Dashboard Actions" styleClass="subtitle-text" />
+            <HBox spacing="20" alignment="CENTER">
+                <Button fx:id="refreshButton" styleClass="glass-button" text="🔄 Refresh Data" 
+                        prefWidth="160" prefHeight="55" />
+                <Button fx:id="exportButton" styleClass="glass-button" text="📥 Export Report" 
+                        prefWidth="160" prefHeight="55" />
+                <Button fx:id="backButton" styleClass="glass-button, primary-button" text="🏠 Back to Home" 
+                        prefWidth="180" prefHeight="55" />
+            </HBox>
+            <VBox spacing="10" alignment="CENTER">
+                <Label text="💡 Pro Tips for Better Insights" styleClass="subtitle-text" />
+                <Label text="• Write daily to get more accurate emotional patterns" styleClass="body-text" />
+                <Label text="• Be honest about your feelings for better analysis" styleClass="body-text" />
+                <Label text="• Review your trends weekly to track progress" styleClass="body-text" />
             </VBox>
-            <VBox spacing="12" alignment="CENTER" styleClass="stat-card">
-                <Label fx:id="avgSentimentLabel" text="0.0" styleClass="stat-number" />
-                <Label text="💭 Avg Sentiment" styleClass="stat-label" />
-                <Label text="Overall mood" styleClass="caption-text" />
-            </VBox>
-            <VBox spacing="12" alignment="CENTER" styleClass="stat-card">
-                <Label fx:id="dominantMoodLabel" text="-" styleClass="stat-number" />
-                <Label text="😊 Dominant Mood" styleClass="stat-label" />
-                <Label text="Most frequent" styleClass="caption-text" />
-            </VBox>
-        </HBox>
-        
-        <!-- Action Buttons -->
-        <HBox spacing="20" alignment="CENTER">
-            <Button fx:id="refreshButton" styleClass="glass-button" text="🔄 Refresh Data" prefWidth="150" prefHeight="50" />
-            <Button fx:id="exportButton" styleClass="glass-button" text="📥 Export Report" prefWidth="150" prefHeight="50" />
-            <Button fx:id="backButton" styleClass="glass-button" text="🏠 Back to Home" prefWidth="170" prefHeight="50" />
-        </HBox>
-        
-        <!-- Status Message -->
-        <VBox spacing="10" alignment="CENTER">
-            <Label fx:id="statusLabel" styleClass="status-text" wrapText="true" />
-            <Label text="💡 Tip: Write regularly to get more accurate insights" styleClass="caption-text" />
         </VBox>
+        
     </VBox>
     
     </VBox>

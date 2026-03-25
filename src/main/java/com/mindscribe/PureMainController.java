@@ -328,47 +328,63 @@ public class PureMainController {
         try {
             FXMLLoader loader;
             String title;
+            String fxmlPath;
             
             switch (section) {
                 case "home":
                     // Just stay on home page, no navigation needed
                     return;
                 case "journal":
-                    loader = new FXMLLoader(getClass().getResource("/fxml/write-journal-view.fxml"));
+                    fxmlPath = "/fxml/write-journal-view.fxml";
                     title = "MindScribe - Write Journal";
                     break;
                 case "analytics":
-                    loader = new FXMLLoader(getClass().getResource("/fxml/mood-dashboard-view.fxml"));
+                    fxmlPath = "/fxml/mood-dashboard-view.fxml";
                     title = "MindScribe - Mood Dashboard";
                     break;
                 case "entries":
-                    loader = new FXMLLoader(getClass().getResource("/fxml/previous-entries-view.fxml"));
+                    fxmlPath = "/fxml/previous-entries-view.fxml";
                     title = "MindScribe - Previous Entries";
                     break;
                 case "ai":
-                    loader = new FXMLLoader(getClass().getResource("/fxml/ai-insights-view.fxml"));
+                    fxmlPath = "/fxml/ai-insights-view.fxml";
                     title = "MindScribe - AI Insights";
                     break;
                 case "settings":
-                    loader = new FXMLLoader(getClass().getResource("/fxml/settings-view.fxml"));
+                    fxmlPath = "/fxml/settings-view.fxml";
                     title = "MindScribe - Settings";
                     break;
                 default:
+                    showAlert("Unknown navigation section: " + section);
                     return;
             }
             
+            // Check if FXML file exists before loading
+            java.net.URL fxmlResource = getClass().getResource(fxmlPath);
+            if (fxmlResource == null) {
+                showAlert("FXML file not found: " + fxmlPath);
+                return;
+            }
+            
             // Load and navigate to the selected page
+            loader = new FXMLLoader(fxmlResource);
             Parent root = loader.load();
             Stage stage = (Stage) mainPane.getScene().getWindow();
             Scene scene = new Scene(root, 1200, 800);
-            scene.getStylesheets().add(getClass().getResource("/styles/style.css").toExternalForm());
+            
+            // Add stylesheets
+            java.net.URL cssResource = getClass().getResource("/styles/style.css");
+            if (cssResource != null) {
+                scene.getStylesheets().add(cssResource.toExternalForm());
+            }
             
             stage.setTitle(title);
             stage.setScene(scene);
             stage.show();
             
         } catch (Exception e) {
-            showAlert("Error loading page: " + e.getMessage());
+            showAlert("Error loading " + section + " page: " + e.getMessage());
+            e.printStackTrace(); // Log the full error for debugging
         }
     }
     

@@ -210,23 +210,34 @@
 /* ================================
    JOURNAL EDITOR
    ================================ */
+/* ================================
+   JOURNAL EDITOR (DARK FIX)
+   ================================ */
 .journal-input, .journal-editor {
-    -fx-background-color: #F3F4F6;
+    /* Background: Deep Purple/Grey to match the Dark Theme */
+    -fx-background-color: #2D2A3E; 
     -fx-background-radius: 18px;
-    -fx-border-color: #7C3AED40;
+    
+    /* Border: Subtle Purple glow */
+    -fx-border-color: #7C3AED80; 
     -fx-border-radius: 18px;
     -fx-border-width: 1px;
-    -fx-text-fill: #111827;
-    -fx-prompt-text-fill: #6B7280;
-    -fx-font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    
+    /* Text: White/Silver for high readability */
+    -fx-text-fill: #E2E8F0; 
+    -fx-prompt-text-fill: #9CA3AF; /* Placeholder text */
+    
+    /* Font & Layout */
+    -fx-font-family: "Segoe UI", sans-serif;
     -fx-font-size: 15px;
     -fx-padding: 25px;
 }
 
+/* Make it glow when you click inside */
 .journal-input:focused, .journal-editor:focused {
     -fx-border-color: #7C3AED;
-    -fx-background-color: #FFFFFF;
-    -fx-effect: dropshadow(three-pass-box, rgba(124,58,237,0.4), 15, 0, 0, 8);
+    -fx-background-color: #35324B;
+    -fx-effect: dropshadow(three-pass-box, rgba(124,58,237,0.4), 15, 0, 0, 0);
 }
 
 .journal-editor-container {
