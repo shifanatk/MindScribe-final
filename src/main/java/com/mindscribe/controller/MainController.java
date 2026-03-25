@@ -17,10 +17,16 @@ import javafx.util.Duration;
 import org.springframework.stereotype.Controller;
 
 import java.net.URL;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import java.util.List;
+import java.util.Map;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 public class MainController implements Initializable {
@@ -108,7 +114,7 @@ public class MainController implements Initializable {
     }
 
     /**
-     * Initialize charts with sample data
+     * Initialize charts with no data - will load from API
      */
     private void initializeCharts() {
         // Mood Pie Chart
@@ -119,11 +125,9 @@ public class MainController implements Initializable {
     }
 
     private void initializeMoodChart() {
-        PieChart.Data positiveData = new PieChart.Data("Positive", 45);
-        PieChart.Data neutralData = new PieChart.Data("Neutral", 30);
-        PieChart.Data negativeData = new PieChart.Data("Negative", 25);
-        
-        moodPieChart.getData().addAll(positiveData, neutralData, negativeData);
+        // Show no data message
+        PieChart.Data noData = new PieChart.Data("No Data", 1);
+        moodPieChart.getData().add(noData);
         
         // Apply custom colors
         applyChartColors();
@@ -131,18 +135,12 @@ public class MainController implements Initializable {
 
     private void initializeSentimentChart() {
         XYChart.Series<Number, Number> series = new XYChart.Series<>();
-        series.setName("Sentiment Trend");
+        series.setName("No Data Available");
         
-        // Sample data for last 7 days
-        series.getData().addAll(
-            new XYChart.Data<>(1, 0.6),
-            new XYChart.Data<>(2, 0.4),
-            new XYChart.Data<>(3, 0.7),
-            new XYChart.Data<>(4, 0.5),
-            new XYChart.Data<>(5, 0.8),
-            new XYChart.Data<>(6, 0.3),
-            new XYChart.Data<>(7, 0.6)
-        );
+        // Show no data instead of sample data
+        for (int i = 1; i <= 7; i++) {
+            series.getData().add(new XYChart.Data<>(i, 0));
+        }
         
         sentimentAreaChart.getData().add(series);
     }
@@ -282,24 +280,19 @@ public class MainController implements Initializable {
         // Clear existing entries
         recentEntriesContainer.getChildren().clear();
         
-        // Sample entries - in real app, these would come from backend
-        String[] sampleEntries = {
-            "Had an amazing day at work today...",
-            "Feeling a bit overwhelmed with everything...",
-            "Grateful for the small moments of joy..."
-        };
+        // Show no data message instead of sample entries
+        Label noDataLabel = new Label("No journal entries available. Start writing to see your entries here!");
+        noDataLabel.setStyle("-fx-text-fill: #9CA3AF; -fx-font-size: 14px; -fx-font-style: italic;");
+        noDataLabel.setWrapText(true);
         
-        for (int i = 0; i < sampleEntries.length; i++) {
-            VBox entryCard = createEntryCard(sampleEntries[i], LocalDate.now().minusDays(i));
-            recentEntriesContainer.getChildren().add(entryCard);
-            
-            // Staggered animation
-            FadeTransition fade = new FadeTransition(Duration.millis(500), entryCard);
-            fade.setFromValue(0.0);
-            fade.setToValue(1.0);
-            fade.setDelay(Duration.millis(i * 100));
-            fade.play();
-        }
+        VBox noDataContainer = new VBox(noDataLabel);
+        noDataContainer.setStyle("-fx-background-color: #2D2A3E40; -fx-background-radius: 12px; -fx-padding: 20px;");
+        noDataContainer.setAlignment(javafx.geometry.Pos.CENTER);
+        
+        recentEntriesContainer.getChildren().add(noDataContainer);
+        
+        // Load real entries from backend
+        loadRealEntries();
     }
 
     /**
@@ -380,6 +373,67 @@ public class MainController implements Initializable {
         
         // Position it and animate
         // Implementation would go here
+    }
+    
+    /**
+     * Load real entries from backend API
+     */
+    private void loadRealEntries() {
+        new Thread(() -> {
+            try {
+                HttpClient client = HttpClient.newHttpClient();
+                HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:8080/api/diary/entries"))
+                    .GET()
+                    .build();
+                
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                
+                javafx.application.Platform.runLater(() -> {
+                    if (response.statusCode() == 200) {
+                        // Parse and display real entries
+                        try {
+                            ObjectMapper mapper = new ObjectMapper();
+                            List<Map<String, Object>> entries = mapper.readValue(response.body(), 
+                                mapper.getTypeFactory().constructCollectionType(List.class, Map.class));
+                            
+                            if (!entries.isEmpty()) {
+                                recentEntriesContainer.getChildren().clear();
+                                
+                                // Display first 3 entries
+                                int maxEntries = Math.min(3, entries.size());
+                                for (int i = 0; i < maxEntries; i++) {
+                                    Map<String, Object> entry = entries.get(i);
+                                    String content = (String) entry.get("content");
+                                    if (content != null && content.length() > 100) {
+                                        content = content.substring(0, 100) + "...";
+                                    }
+                                    
+                                    LocalDate date = LocalDate.now();
+                                    if (entry.containsKey("createdAt")) {
+                                        date = LocalDate.parse(entry.get("createdAt").toString().substring(0, 10));
+                                    }
+                                    
+                                    VBox entryCard = createEntryCard(content, date);
+                                    recentEntriesContainer.getChildren().add(entryCard);
+                                    
+                                    // Staggered animation
+                                    FadeTransition fade = new FadeTransition(Duration.millis(500), entryCard);
+                                    fade.setFromValue(0.0);
+                                    fade.setToValue(1.0);
+                                    fade.setDelay(Duration.millis(i * 100));
+                                    fade.play();
+                                }
+                            }
+                        } catch (Exception e) {
+                            // Keep showing no data message
+                        }
+                    }
+                });
+            } catch (Exception e) {
+                // Keep showing no data message
+            }
+        }).start();
     }
 
     /**

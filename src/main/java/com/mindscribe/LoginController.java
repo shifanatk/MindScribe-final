@@ -66,9 +66,9 @@ public class LoginController {
             
             if (response.statusCode() == 200) {
                 LoginResponse loginResponse = objectMapper.readValue(response.body(), LoginResponse.class);
-                if (loginResponse.isSuccess()) {
-                    // Store session
-                    SessionManager.login(username, loginResponse.getUser().get("id").toString());
+                if (loginResponse.isSuccess() || loginResponse.getUser() != null) {
+                    // Store session with credentials for API authentication
+                    SessionManager.login(username, password);
                     navigateToHome();
                 } else {
                     showError("Invalid username or password");
@@ -104,17 +104,33 @@ public class LoginController {
     
     private void navigateToHome() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/home-view.fxml"));
+            System.out.println("Attempting to load elegant-home-view.fxml...");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/elegant-home-view.fxml"));
+            
+            if (loader.getLocation() == null) {
+                System.out.println("ERROR: Could not find elegant-home-view.fxml");
+                showError("Could not find elegant-home-view.fxml file");
+                return;
+            }
+            
             Parent root = loader.load();
+            System.out.println("Successfully loaded elegant-home-view.fxml");
             
             Stage stage = (Stage) usernameField.getScene().getWindow();
             Scene scene = new Scene(root, 1200, 800);
-            scene.getStylesheets().add(getClass().getResource("/styles/style.css").toExternalForm());
+            
+            String cssPath = getClass().getResource("/styles/style.css").toExternalForm();
+            System.out.println("Loading CSS from: " + cssPath);
+            scene.getStylesheets().add(cssPath);
             
             stage.setTitle("MindScribe - Home");
             stage.setScene(scene);
             stage.show();
+            
+            System.out.println("Elegant home page loaded successfully");
         } catch (Exception e) {
+            System.out.println("Error loading elegant home page: " + e.getMessage());
+            e.printStackTrace();
             showError("Error loading home page: " + e.getMessage());
         }
     }
@@ -132,14 +148,15 @@ public class LoginController {
     private static class LoginResponse {
         private String message;
         private Map<String, Object> user;
+        private boolean success;
         
         public String getMessage() { return message; }
         public void setMessage(String message) { this.message = message; }
         public Map<String, Object> getUser() { return user; }
         public void setUser(Map<String, Object> user) { this.user = user; }
-        
         public boolean isSuccess() { 
-            return user != null && !user.isEmpty(); 
+            return success || (user != null && !user.isEmpty()); 
         }
+        public void setSuccess(boolean success) { this.success = success; }
     }
 }

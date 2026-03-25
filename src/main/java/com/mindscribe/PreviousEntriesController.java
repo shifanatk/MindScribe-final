@@ -19,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mindscribe.config.AppConfig;
 
 public class PreviousEntriesController {
 
@@ -44,6 +45,7 @@ public class PreviousEntriesController {
     
     @FXML private Button loadMoreButton;
     @FXML private Button exportButton;
+    @FXML private Button refreshButton;
     @FXML private Button backButton;
     
     @FXML private Label statusLabel;
@@ -65,6 +67,21 @@ public class PreviousEntriesController {
         
         // Load entries
         loadEntries();
+        
+        // Auto-refresh entries every 30 seconds
+        setupAutoRefresh();
+    }
+    
+    private void setupAutoRefresh() {
+        // Schedule automatic refresh every 30 seconds
+        javafx.animation.Timeline refreshTimer = new javafx.animation.Timeline(
+            new javafx.animation.KeyFrame(
+                javafx.util.Duration.seconds(30),
+                event -> loadEntries()
+            )
+        );
+        refreshTimer.setCycleCount(javafx.animation.Animation.INDEFINITE);
+        refreshTimer.play();
     }
     
     private void setupMoodFilter() {
@@ -125,6 +142,7 @@ public class PreviousEntriesController {
         analyzeEntryButton.setOnAction(e -> analyzeEntry());
         loadMoreButton.setOnAction(e -> loadMoreEntries());
         exportButton.setOnAction(e -> exportEntries());
+        refreshButton.setOnAction(e -> loadEntries());
         backButton.setOnAction(e -> navigateToHome());
         
         // Setup search field
@@ -147,7 +165,8 @@ public class PreviousEntriesController {
         new Thread(() -> {
             try {
                 HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/api/diary/entries?username=" + currentUser))
+                    .uri(URI.create(AppConfig.DIARY_ENTRIES + "?username=" + currentUser))
+                    .header("Authorization", SessionManager.getBasicAuthHeader())
                     .GET()
                     .build();
                 
@@ -322,7 +341,7 @@ public class PreviousEntriesController {
     
     private void navigateToHome() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/home-view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/elegant-home-view.fxml"));
             Parent root = loader.load();
             
             Stage stage = (Stage) backButton.getScene().getWindow();

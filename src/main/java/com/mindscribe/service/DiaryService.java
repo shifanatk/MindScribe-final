@@ -2,7 +2,6 @@ package com.mindscribe.service;
 
 import com.mindscribe.model.h2.JournalEntry;
 import com.mindscribe.repository.h2.JournalRepository;
-import com.mindscribe.service.SentimentAnalysisService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,12 +23,19 @@ public class DiaryService {
     public JournalEntry createEntry(String title, String content, String username) {
         JournalEntry entry = new JournalEntry(title, content, username);
         
-        // Use AI sentiment analysis
-        String sentiment = sentimentAnalysisService.analyzeSentiment(content);
-        Double sentimentScore = sentimentAnalysisService.getSentimentScore(content);
-        
-        entry.setSentiment(sentiment);
-        entry.setSentimentScore(sentimentScore);
+        // Use AI sentiment analysis with error handling
+        try {
+            String sentiment = sentimentAnalysisService.analyzeSentiment(content);
+            Double sentimentScore = sentimentAnalysisService.getSentimentScore(content);
+            
+            entry.setSentiment(sentiment);
+            entry.setSentimentScore(sentimentScore);
+        } catch (Exception e) {
+            System.err.println("AI sentiment analysis failed: " + e.getMessage());
+            // Set default values if AI analysis fails
+            entry.setSentiment("neutral");
+            entry.setSentimentScore(0.0);
+        }
         
         return journalRepository.save(entry);
     }

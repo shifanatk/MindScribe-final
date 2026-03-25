@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.Background?>
+<?import javafx.scene.layout.BackgroundFill?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane fx:id="mainPane" styleClass="main-border-pane" 
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.mindscribe.ElegantHomeController">
+    
+    <!-- LEFT SIDEBAR -->
+    <left>
+        <VBox styleClass="sidebar" spacing="20">
+            <!-- App Logo/Home -->
+            <Button fx:id="homeButton" styleClass="sidebar-button, selected" text="🏠" />
+            
+            <!-- Journal Entries -->
+            <Button fx:id="journalButton" styleClass="sidebar-button" text="📝" />
+            
+            <!-- Analytics -->
+            <Button fx:id="analyticsButton" styleClass="sidebar-button" text="📊" />
+            
+            <!-- AI Insights -->
+            <Button fx:id="aiButton" styleClass="sidebar-button" text="🤖" />
+            
+            <!-- Settings -->
+            <Button fx:id="settingsButton" styleClass="sidebar-button" text="⚙️" />
+            
+            <Region VBox.vgrow="ALWAYS" />
+            
+            <!-- Logout Button -->
+            <Button fx:id="logoutButton" styleClass="glass-button" text="🚪 Logout" prefWidth="60" prefHeight="40" />
+        </VBox>
+    </left>
+    
+    <!-- CENTER CONTENT -->
+    <center>
+        <VBox spacing="25" alignment="TOP_CENTER" styleClass="glass-container">
+            <!-- Header Section -->
+            <VBox spacing="10" alignment="CENTER">
+                <Label fx:id="dateLabel" styleClass="date-label" />
+                <Label fx:id="welcomeLabel" styleClass="welcome-label" />
+            </VBox>
+            
+            <!-- Dynamic Welcome Section -->
+            <VBox fx:id="contentContainer" spacing="20" alignment="CENTER">
+                <!-- Content will be dynamically generated -->
+            </VBox>
+            
+            <!-- Action Buttons -->
+            <HBox spacing="15" alignment="CENTER">
+                <Button fx:id="writeJournalButton" styleClass="glass-button, primary-button" text="✍️ Write Journal" prefWidth="150" prefHeight="45" />
+                <Button fx:id="viewEntriesButton" styleClass="glass-button" text="📚 View Entries" prefWidth="150" prefHeight="45" />
+                <Button fx:id="analyticsButton" styleClass="glass-button" text="📊 Analytics" prefWidth="150" prefHeight="45" />
+                <Button fx:id="aiInsightsButton" styleClass="glass-button" text="🤖 AI Insights" prefWidth="150" prefHeight="45" />
+            </HBox>
+            
+            <!-- Status Label -->
+            <Label fx:id="statusLabel" styleClass="status-text" wrapText="true" />
+        </VBox>
+    </center>
+    
+</BorderPane>

@@ -28,8 +28,21 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
+        // Validate request body
+        if (loginRequest == null) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Invalid request");
+            return ResponseEntity.status(400).body(error);
+        }
+        
         String username = loginRequest.get("username");
         String password = loginRequest.get("password");
+
+        if (username == null || username.isBlank() || password == null || password.isBlank()) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Username and password required");
+            return ResponseEntity.status(400).body(error);
+        }
 
         System.out.println("Login attempt for username: " + username);
 
@@ -47,6 +60,7 @@ public class AuthController {
             if (user != null) {
                 Map<String, Object> response = new HashMap<>();
                 response.put("message", "Login successful");
+                response.put("success", true);
                 response.put("user", Map.of(
                     "id", user.getId(),
                     "username", username,

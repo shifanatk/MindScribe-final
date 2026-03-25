@@ -1,0 +1,11 @@
+com\mindscribe\controller\AuthController$RegisterRequest.class
+com\mindscribe\util\ThreadManager.class
+com\mindscribe\controller\DebugController.class
+com\mindscribe\controller\AnalyticsController.class
+com\mindscribe\controller\DiaryController$NewEntryRequest.class
+com\mindscribe\controller\DiaryController.class
+com\mindscribe\service\DiaryService.class
+com\mindscribe\controller\DashboardController.class
+com\mindscribe\controller\TestController.class
+com\mindscribe\controller\AuthController.class
+com\mindscribe\controller\MainController.class

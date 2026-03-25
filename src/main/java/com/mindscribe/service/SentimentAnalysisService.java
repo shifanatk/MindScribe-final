@@ -46,15 +46,15 @@ public class SentimentAnalysisService {
             
             // Step 3: Load HuggingFace Tokenizer from local file
             try {
-                System.out.println("🔍 Loading HuggingFace Tokenizer from local file...");
+                System.out.println(" Loading HuggingFace Tokenizer from local file...");
                 
                 // Get the path to your local tokenizer.json
                 java.nio.file.Path tokenizerPath = java.nio.file.Paths.get("tokenizer.json");
-                System.out.println("� Tokenizer path: " + tokenizerPath.toAbsolutePath());
+                System.out.println(" Tokenizer path: " + tokenizerPath.toAbsolutePath());
                 
                 // Load the tokenizer from the local file instead of the Hub
                 tok = HuggingFaceTokenizer.newInstance(tokenizerPath);
-                System.out.println("✅ HuggingFace Tokenizer loaded successfully from local file");
+                System.out.println(" HuggingFace Tokenizer loaded successfully from local file");
                 
             } catch (Exception tokenizerError) {
                 System.err.println("❌ HuggingFace tokenizer failed: " + tokenizerError.getMessage());
@@ -137,13 +137,15 @@ public class SentimentAnalysisService {
             
             System.out.println("🔤 Tokenized to " + inputIds.length + " tokens");
             
-            // Create input tensors for ONNX
+            // Create input tensors for ONNX (TinyBert needs both input_ids and attention_mask)
             OnnxTensor inputIdsTensor = OnnxTensor.createTensor(environment, LongBuffer.wrap(inputIds), new long[]{1, inputIds.length});
+            OnnxTensor attentionMaskTensor = OnnxTensor.createTensor(environment, LongBuffer.wrap(attentionMask), new long[]{1, attentionMask.length});
             
-            // Run ONNX inference
+            // Run ONNX inference with both inputs
             OrtSession.Result result = session.run(
                 Map.of(
-                    "input_ids", inputIdsTensor
+                    "input_ids", inputIdsTensor,
+                    "attention_mask", attentionMaskTensor
                 )
             );
             
@@ -186,19 +188,23 @@ public class SentimentAnalysisService {
         try {
             // Tokenize input text
             long[] inputIds;
+            long[] attentionMask;
             
             if (tokenizer != null) {
                 var encoding = tokenizer.encode(text);
                 inputIds = encoding.getIds();
+                attentionMask = encoding.getAttentionMask();
             } else {
                 throw new RuntimeException("Tokenizer not available - cannot calculate sentiment score");
             }
             
             OnnxTensor inputIdsTensor = OnnxTensor.createTensor(environment, LongBuffer.wrap(inputIds), new long[]{1, inputIds.length});
+            OnnxTensor attentionMaskTensor = OnnxTensor.createTensor(environment, LongBuffer.wrap(attentionMask), new long[]{1, attentionMask.length});
             
             OrtSession.Result result = session.run(
                 Map.of(
-                    "input_ids", inputIdsTensor
+                    "input_ids", inputIdsTensor,
+                    "attention_mask", attentionMaskTensor
                 )
             );
             

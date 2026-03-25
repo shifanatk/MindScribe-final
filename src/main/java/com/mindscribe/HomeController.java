@@ -6,14 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.URI;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class HomeController {
 
@@ -21,27 +15,22 @@ public class HomeController {
     @FXML private Button viewEntriesButton;
     @FXML private Button analyticsButton;
     @FXML private Button aiButton;
+    @FXML private Button aiInsightsButton;
     @FXML private Button settingsButton;
     @FXML private Button logoutButton;
     @FXML private Label dateLabel;
-    @FXML private Label totalEntriesLabel;
-    @FXML private Label currentMoodLabel;
-    @FXML private Label dayStreakLabel;
-    
-    private final HttpClient httpClient = HttpClient.newHttpClient();
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @FXML
     public void initialize() {
         setupEventHandlers();
         setCurrentDate();
-        loadDashboardData();
     }
     
     private void setupEventHandlers() {
         writeJournalButton.setOnAction(e -> navigateToPage("write-journal"));
         viewEntriesButton.setOnAction(e -> navigateToPage("previous-entries"));
         analyticsButton.setOnAction(e -> navigateToPage("mood-dashboard"));
+        aiInsightsButton.setOnAction(e -> navigateToPage("ai-insights"));
         aiButton.setOnAction(e -> showAlert("AI Insights coming soon!"));
         settingsButton.setOnAction(e -> showAlert("Settings coming soon!"));
         logoutButton.setOnAction(e -> handleLogout());
@@ -53,61 +42,40 @@ public class HomeController {
         dateLabel.setText(formattedDate);
     }
     
-    private void loadDashboardData() {
-        String currentUser = SessionManager.getCurrentUser();
-        if (currentUser == null) {
-            showStatus("❌ Please login to view dashboard");
-            return;
-        }
-        
-        new Thread(() -> {
-            try {
-                // Get dashboard statistics from backend
-                HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/api/dashboard/stats?username=" + currentUser))
-                    .GET()
-                    .build();
-                
-                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-                
-                if (response.statusCode() == 200) {
-                    Map<String, Object> stats = objectMapper.readValue(response.body(), Map.class);
-                    
-                    javafx.application.Platform.runLater(() -> {
-                        totalEntriesLabel.setText(String.valueOf(stats.getOrDefault("totalEntries", 0)));
-                        
-                        String currentMood = (String) stats.getOrDefault("currentMood", "Neutral");
-                        currentMoodLabel.setText(currentMood);
-                        
-                        dayStreakLabel.setText(String.valueOf(stats.getOrDefault("dayStreak", 0)));
-                    });
-                }
-            } catch (Exception e) {
-                javafx.application.Platform.runLater(() -> {
-                    totalEntriesLabel.setText("0");
-                    currentMoodLabel.setText("Unknown");
-                    dayStreakLabel.setText("0");
-                });
-            }
-        }).start();
-    }
     
     private void navigateToPage(String page) {
         try {
-            String fxmlFile = "/fxml/" + page + "-view.fxml";
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
-            Parent root = loader.load();
-            
-            Stage stage = (Stage) writeJournalButton.getScene().getWindow();
-            Scene scene = new Scene(root, 1200, 800);
-            scene.getStylesheets().add(getClass().getResource("/styles/style.css").toExternalForm());
-            
-            String title = "MindScribe - " + page.substring(0, 1).toUpperCase() + page.substring(1);
-            stage.setTitle(title);
-            stage.setScene(scene);
-            stage.show();
+            if(page.equals("home")) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/elegant-home-view.fxml"));
+                Parent root = loader.load();
+                
+                Stage stage = (Stage) writeJournalButton.getScene().getWindow();
+                Scene scene = new Scene(root, 1200, 800);
+                scene.getStylesheets().add(getClass().getResource("/styles/style.css").toExternalForm());
+                
+                stage.setTitle("MindScribe - Home");
+                stage.setScene(scene);
+                stage.show();
+            } else {
+                String fxmlFile = "/fxml/" + page + "-view.fxml";
+                FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
+                Parent root = loader.load();
+                
+                Stage stage = (Stage) writeJournalButton.getScene().getWindow();
+                Scene scene = new Scene(root, 1200, 800);
+                scene.getStylesheets().add(getClass().getResource("/styles/style.css").toExternalForm());
+                
+                String title = "MindScribe - " + page.substring(0, 1).toUpperCase() + page.substring(1);
+                stage.setTitle(title);
+                stage.setScene(scene);
+                stage.show();
+            }
         } catch (Exception e) {
-            showAlert("Error loading " + page + " page: " + e.getMessage());
+            if(page.equals("home")) {
+                showError("Error loading home page: " + e.getMessage());
+            } else {
+                showAlert("Error loading " + page + " page: " + e.getMessage());
+            }
         }
     }
     
@@ -127,11 +95,11 @@ public class HomeController {
             stage.setScene(scene);
             stage.show();
         } catch (Exception e) {
-            showAlert("Error loading login page: " + e.getMessage());
+            showError("Error loading login page: " + e.getMessage());
         }
     }
     
-    private void showAlert(String message) {
+    private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
         alert.setHeaderText(null);
@@ -139,8 +107,11 @@ public class HomeController {
         alert.showAndWait();
     }
     
-    private void showStatus(String message) {
-        // You can add a status label to the FXML or use a toast notification
-        System.out.println("STATUS: " + message);
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

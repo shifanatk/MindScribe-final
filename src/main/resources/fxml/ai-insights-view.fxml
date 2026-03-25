@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.chart.AreaChart?>
+<?import javafx.scene.chart.NumberAxis?>
+
+<VBox spacing="30" alignment="CENTER" styleClass="glass-container" 
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.mindscribe.AIInsightsController">
+    
+    <!-- Header -->
+    <VBox spacing="15" alignment="CENTER">
+        <Label text="🤖 AI Insights" style="-fx-font-size: 32px; -fx-font-weight: 700; -fx-text-fill: #E2E8F0;" />
+        <Label text="Your personal mental wellness companion" style="-fx-font-size: 16px; -fx-text-fill: #9CA3AF; -fx-font-style: italic;" />
+    </VBox>
+    
+    <!-- Status Label -->
+    <Label fx:id="statusLabel" style="-fx-text-fill: #10B981; -fx-font-size: 14px;" />
+    
+    <!-- The Vibe Card -->
+    <VBox spacing="20" alignment="CENTER" style="-fx-background-color: rgba(45, 42, 62, 0.6); -fx-background-radius: 20px; -fx-padding: 30px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 20, 0, 0, 10);">
+        <Label text="Your Weekly Vibe" style="-fx-font-size: 18px; -fx-text-fill: #A5B4FC; -fx-font-weight: 600;" />
+        <Label fx:id="vibeLabel" text="📊 Analyzing..." style="-fx-font-size: 48px; -fx-font-weight: 800; -fx-text-fill: #10B981;" />
+    </VBox>
+    
+    <!-- Visualization Panel (The "What") -->
+    <VBox spacing="25" maxWidth="1000">
+        <Label text="📊 Your Emotional Landscape" style="-fx-font-size: 24px; -fx-font-weight: 600; -fx-text-fill: #E2E8F0;" />
+        
+        <!-- Mood Trend Line -->
+        <VBox spacing="15" style="-fx-background-color: rgba(45, 42, 62, 0.4); -fx-background-radius: 15px; -fx-padding: 20px;">
+            <Label text="Mood Trend Line (7 Days)" style="-fx-font-size: 18px; -fx-text-fill: #A5B4FC; -fx-font-weight: 500;" />
+            <AreaChart fx:id="moodTrendChart" prefHeight="200" legendVisible="false" createSymbols="true">
+                <xAxis>
+                    <NumberAxis label="Day" tickLabelFill="#9CA3AF" />
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Mood Score" tickLabelFill="#9CA3AF" />
+                </yAxis>
+            </AreaChart>
+        </VBox>
+        
+        <!-- Word Cloud & Activity Correlation -->
+        <HBox spacing="20">
+            <!-- Word Cloud -->
+            <VBox spacing="10" HBox.hgrow="1" style="-fx-background-color: rgba(45, 42, 62, 0.4); -fx-background-radius: 15px; -fx-padding: 20px;">
+                <Label text="💭 Common Themes" style="-fx-font-size: 16px; -fx-text-fill: #A5B4FC; -fx-font-weight: 500;" />
+                <Label fx:id="wordCloudLabel" text="Loading themes..." style="-fx-text-fill: #E2E8F0; -fx-wrap-text: true;" />
+            </VBox>
+            
+            <!-- Activity Correlation -->
+            <VBox spacing="10" HBox.hgrow="1" style="-fx-background-color: rgba(45, 42, 62, 0.4); -fx-background-radius: 15px; -fx-padding: 20px;">
+                <Label text="🎯 Activity Correlation" style="-fx-font-size: 16px; -fx-text-fill: #A5B4FC; -fx-font-weight: 500;" />
+                <Label fx:id="activityCorrelationLabel" text="Loading correlation..." style="-fx-text-fill: #E2E8F0; -fx-wrap-text: true;" />
+            </VBox>
+        </HBox>
+    </VBox>
+    
+    <!-- AI Insight Panel (The "Why") -->
+    <VBox spacing="25" maxWidth="1000">
+        <Label text="🧠 AI Insights" style="-fx-font-size: 24px; -fx-font-weight: 600; -fx-text-fill: #E2E8F0;" />
+        
+        <!-- Primary Analysis -->
+        <VBox spacing="20" style="-fx-background-color: rgba(45, 42, 62, 0.4); -fx-background-radius: 15px; -fx-padding: 25px;">
+            <HBox spacing="30" alignment="CENTER">
+                <VBox spacing="5" alignment="CENTER">
+                    <Label fx:id="primarySentimentLabel" text="Loading..." style="-fx-font-size: 16px; -fx-text-fill: #10B981; -fx-font-weight: 600;" />
+                    <Label text="Primary Sentiment" style="-fx-font-size: 12px; -fx-text-fill: #9CA3AF;" />
+                </VBox>
+                <VBox spacing="5" alignment="CENTER">
+                    <Label fx:id="keyTriggerLabel" text="Loading..." style="-fx-font-size: 16px; -fx-text-fill: #F59E0B; -fx-font-weight: 600;" />
+                    <Label text="Key Trigger" style="-fx-font-size: 12px; -fx-text-fill: #9CA3AF;" />
+                </VBox>
+            </HBox>
+            
+            <!-- Insight Text with Typewriter Effect -->
+            <VBox spacing="10">
+                <Label text="� Your Personal Insight" style="-fx-font-size: 16px; -fx-text-fill: #A5B4FC; -fx-font-weight: 500;" />
+                <Label fx:id="insightLabel" text="Analyzing your patterns..." style="-fx-font-size: 14px; -fx-text-fill: #E2E8F0; -fx-wrap-text: true; -fx-line-spacing: 2;" />
+            </VBox>
+        </VBox>
+        
+        <!-- Focus for Tomorrow -->
+        <VBox spacing="15" style="-fx-background-color: rgba(16, 185, 129, 0.1); -fx-background-radius: 15px; -fx-padding: 20px; -fx-border-color: #10B981; -fx-border-radius: 15px;">
+            <Label text="🎯 Focus for Tomorrow" style="-fx-font-size: 18px; -fx-text-fill: #10B981; -fx-font-weight: 600;" />
+            <Label fx:id="focusForTomorrowLabel" text="Loading your personalized focus..." style="-fx-font-size: 14px; -fx-text-fill: #E2E8F0; -fx-wrap-text: true; -fx-line-spacing: 2;" />
+        </VBox>
+    </VBox>
+    
+    <!-- Action Buttons -->
+    <HBox spacing="20" alignment="CENTER">
+        <Button fx:id="refreshInsightsButton" text="🔄 Refresh Insights" styleClass="glass-button" prefWidth="150" prefHeight="45" />
+        <Button fx:id="exportReportButton" text="📊 Export Report" styleClass="glass-button" prefWidth="150" prefHeight="45" />
+        <Button fx:id="backButton" text="🏠 Back Home" styleClass="glass-button, primary-button" prefWidth="150" prefHeight="45" />
+    </HBox>
+    
+</VBox>

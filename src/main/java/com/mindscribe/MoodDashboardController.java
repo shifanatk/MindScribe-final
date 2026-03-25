@@ -16,6 +16,7 @@ import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import com.mindscribe.config.AppConfig;
 
 public class MoodDashboardController {
 
@@ -24,6 +25,11 @@ public class MoodDashboardController {
     @FXML private Label totalEntriesLabel;
     @FXML private Label avgSentimentLabel;
     @FXML private Label dominantMoodLabel;
+    @FXML private Label currentMonthLabel;
+    @FXML private Label monthEntriesLabel;
+    @FXML private Label monthAvgSentimentLabel;
+    @FXML private Label weekTrendLabel;
+    @FXML private Label bestDayLabel;
     
     @FXML private PieChart moodPieChart;
     @FXML private AreaChart<Number, Number> sentimentAreaChart;
@@ -58,6 +64,7 @@ public class MoodDashboardController {
         loadMoodDistribution();
         loadSentimentTrends();
         loadStatistics();
+        loadMonthlyTrends();
     }
     
     private void updatePieChart(Map<String, Long> moodCounts) {
@@ -87,7 +94,8 @@ public class MoodDashboardController {
         
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/analytics/mood-distribution?username=" + currentUser))
+                .uri(URI.create(AppConfig.ANALYTICS_MOOD_DISTRIBUTION + "?username=" + currentUser))
+                .header("Authorization", SessionManager.getBasicAuthHeader())
                 .GET()
                 .build();
             
@@ -165,7 +173,8 @@ public class MoodDashboardController {
         
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/analytics/sentiment-trends?username=" + currentUser))
+                .uri(URI.create(AppConfig.ANALYTICS_SENTIMENT_TRENDS + "?username=" + currentUser))
+                .header("Authorization", SessionManager.getBasicAuthHeader())
                 .GET()
                 .build();
             
@@ -263,7 +272,8 @@ public class MoodDashboardController {
         
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/analytics/statistics?username=" + currentUser))
+                .uri(URI.create(AppConfig.ANALYTICS_STATISTICS + "?username=" + currentUser))
+                .header("Authorization", SessionManager.getBasicAuthHeader())
                 .GET()
                 .build();
             
@@ -343,6 +353,89 @@ public class MoodDashboardController {
             stage.show();
         } catch (Exception e) {
             showStatus("❌ Error navigating to home: " + e.getMessage());
+        }
+    }
+    
+    private void loadMonthlyTrends() {
+        String currentUser = SessionManager.getCurrentUser();
+        if (currentUser == null) {
+            javafx.application.Platform.runLater(() -> {
+                showStatus("❌ Please login to view monthly trends");
+            });
+            return;
+        }
+        
+        new Thread(() -> {
+            try {
+                // Set current month label
+                java.time.LocalDate now = java.time.LocalDate.now();
+                String currentMonth = now.format(DateTimeFormatter.ofPattern("MMMM yyyy"));
+                javafx.application.Platform.runLater(() -> {
+                    currentMonthLabel.setText(currentMonth);
+                });
+                
+                // Get monthly statistics
+                HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(AppConfig.ANALYTICS_STATISTICS + "?username=" + currentUser))
+                    .header("Authorization", SessionManager.getBasicAuthHeader())
+                    .GET()
+                    .build();
+                
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+                
+                javafx.application.Platform.runLater(() -> {
+                    if (response.statusCode() == 200) {
+                        try {
+                            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                            @SuppressWarnings("unchecked")
+                            Map<String, Object> stats = mapper.readValue(response.body(), Map.class);
+                            updateMonthlyTrends(stats);
+                        } catch (Exception e) {
+                            showStatus("❌ Error loading monthly trends: " + e.getMessage());
+                        }
+                    } else {
+                        // Set default values
+                        monthEntriesLabel.setText("0");
+                        monthAvgSentimentLabel.setText("0.0");
+                        weekTrendLabel.setText("→");
+                        bestDayLabel.setText("-");
+                    }
+                });
+            } catch (Exception e) {
+                javafx.application.Platform.runLater(() -> {
+                    showStatus("❌ Error loading monthly trends: " + e.getMessage());
+                });
+            }
+        }).start();
+    }
+    
+    private void updateMonthlyTrends(Map<String, Object> stats) {
+        if (stats != null) {
+            Number totalEntries = (Number) stats.getOrDefault("totalEntries", 0);
+            Number avgSentiment = (Number) stats.getOrDefault("avgSentimentScore", 0.0);
+            
+            // Update monthly stats (for now, use overall stats as placeholder)
+            monthEntriesLabel.setText(String.valueOf(totalEntries));
+            monthAvgSentimentLabel.setText(String.format("%.2f", avgSentiment.doubleValue()));
+            
+            // Calculate week trend (placeholder)
+            double sentiment = avgSentiment.doubleValue();
+            if (sentiment > 0.6) {
+                weekTrendLabel.setText("📈");
+                weekTrendLabel.setStyle("-fx-text-fill: #10B981;");
+            } else if (sentiment < 0.4) {
+                weekTrendLabel.setText("📉");
+                weekTrendLabel.setStyle("-fx-text-fill: #EF4444;");
+            } else {
+                weekTrendLabel.setText("→");
+                weekTrendLabel.setStyle("-fx-text-fill: #F59E0B;");
+            }
+            
+            // Best day (placeholder)
+            java.time.LocalDate today = java.time.LocalDate.now();
+            String bestDay = today.format(DateTimeFormatter.ofPattern("EEE"));
+            bestDayLabel.setText(bestDay);
+            bestDayLabel.setStyle("-fx-text-fill: #10B981;");
         }
     }
     

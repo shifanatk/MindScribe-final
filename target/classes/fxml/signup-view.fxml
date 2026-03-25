@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="25" alignment="CENTER" styleClass="glass-container" 
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.mindscribe.SignupController">
+    
+    <!-- Logo/Title -->
+    <VBox spacing="10" alignment="CENTER">
+        <Label text="🧠" styleClass="title-text" />
+        <Label text="Create Account" styleClass="title-text" />
+        <Label text="Join MindScribe today" styleClass="caption-text" />
+    </VBox>
+    
+    <!-- Signup Form -->
+    <VBox spacing="15" maxWidth="350">
+        <VBox spacing="8">
+            <Label text="Username" styleClass="body-text" />
+            <TextField fx:id="usernameField" promptText="Choose a username" 
+                      styleClass="login-input" prefWidth="350" />
+        </VBox>
+        
+        <VBox spacing="8">
+            <Label text="Password" styleClass="body-text" />
+            <PasswordField fx:id="passwordField" promptText="Create a password (min 6 chars)" 
+                          styleClass="login-input" prefWidth="350" />
+        </VBox>
+        
+        <VBox spacing="8">
+            <Label text="Confirm Password" styleClass="body-text" />
+            <PasswordField fx:id="confirmPasswordField" promptText="Confirm your password" 
+                          styleClass="login-input" prefWidth="350" />
+        </VBox>
+        
+        <Button fx:id="signupButton" text="Create Account" styleClass="glass-button" 
+                prefWidth="350" prefHeight="45" />
+        
+        <Label fx:id="errorLabel" styleClass="error-text" wrapText="true" />
+    </VBox>
+    
+    <!-- Login Link -->
+    <HBox spacing="5" alignment="CENTER">
+        <Label text="Already have an account?" styleClass="body-text" />
+        <Hyperlink fx:id="loginLink" text="Sign in" styleClass="signup-link" />
+    </HBox>
+    
+</VBox>

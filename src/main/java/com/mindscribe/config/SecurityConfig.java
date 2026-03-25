@@ -50,13 +50,13 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/diary/**").permitAll()
                 .requestMatchers("/api/debug/**").permitAll()
-                .requestMatchers("/api/ai/**").permitAll()
-                .requestMatchers("/api/ai-status/**").permitAll()
-                .requestMatchers("/api/analytics/**").permitAll()
                 .requestMatchers("/api/test/**").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
+                .requestMatchers("/api/diary/**").authenticated()
+                .requestMatchers("/api/ai/**").authenticated()
+                .requestMatchers("/api/ai-status/**").authenticated()
+                .requestMatchers("/api/analytics/**").authenticated()
                 .anyRequest().authenticated()
             )
             .headers(headers -> headers.frameOptions(frame -> frame.disable()))

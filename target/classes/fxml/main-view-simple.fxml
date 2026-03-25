@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.chart.AreaChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.layout.StackPane?>
+
+<BorderPane fx:id="mainPane" styleClass="main-border-pane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mindscribe.PureMainController">
+    
+    <!-- LEFT SIDEBAR -->
+    <left>
+        <VBox styleClass="sidebar" spacing="20">
+            <!-- App Logo/Home -->
+            <Button fx:id="homeButton" styleClass="sidebar-button, selected" text="🏠" />
+            
+            <!-- Journal Entries -->
+            <Button fx:id="journalButton" styleClass="sidebar-button" text="📝" />
+            
+            <!-- Analytics -->
+            <Button fx:id="analyticsButton" styleClass="sidebar-button" text="📊" />
+            
+            <!-- AI Insights -->
+            <Button fx:id="aiButton" styleClass="sidebar-button" text="🤖" />
+            
+            <!-- Settings -->
+            <Button fx:id="settingsButton" styleClass="sidebar-button" text="⚙️" />
+            
+            <Region VBox.vgrow="ALWAYS" />
+            
+            <!-- User Profile -->
+            <Button fx:id="profileButton" styleClass="sidebar-button" text="👤" />
+        </VBox>
+    </left>
+    
+    <!-- CENTER CONTENT -->
+    <center>
+        <StackPane styleClass="glass-container">
+            <VBox spacing="25" styleClass="fade-in">
+                <!-- HEADER -->
+                <HBox alignment="CENTER_LEFT" spacing="20">
+                    <Label fx:id="dateLabel" styleClass="subtitle-text" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Button fx:id="saveButton" styleClass="glass-button" text="Save Entry" />
+                    <Button fx:id="analyzeButton" styleClass="glass-button, ai-highlight" text="AI Analyze" />
+                </HBox>
+                
+                <!-- JOURNAL EDITOR -->
+                <VBox styleClass="journal-editor-container" VBox.vgrow="ALWAYS">
+                    <Label text="What's on your mind today?" styleClass="caption-text" />
+                    <TextArea fx:id="journalEditor" 
+                             styleClass="journal-editor" 
+                             promptText="Share your thoughts, feelings, and experiences..."
+                             VBox.vgrow="ALWAYS" />
+                </VBox>
+                
+                <!-- SENTIMENT DISPLAY -->
+                <HBox fx:id="sentimentContainer" styleClass="sentiment-container" visible="false" spacing="15">
+                    <Label fx:id="sentimentLabel" styleClass="sentiment-label" />
+                    <Label fx:id="sentimentScore" styleClass="sentiment-score" />
+                </HBox>
+            </VBox>
+        </StackPane>
+    </center>
+    
+    <!-- RIGHT SIDEBAR -->
+    <right>
+        <VBox styleClass="sidebar" spacing="20" prefWidth="350">
+            <!-- MOOD CHART -->
+            <VBox styleClass="glass-surface">
+                <Label text="Mood Distribution" styleClass="title-text" />
+                <PieChart fx:id="moodPieChart" legendVisible="false" prefHeight="200" />
+            </VBox>
+            
+            <!-- SENTIMENT TRENDS -->
+            <VBox styleClass="glass-surface">
+                <Label text="Sentiment Trends" styleClass="title-text" />
+                <AreaChart fx:id="sentimentAreaChart" prefHeight="150" legendVisible="false">
+                    <xAxis>
+                        <NumberAxis label="Days" tickUnit="1" />
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis label="Sentiment" />
+                    </yAxis>
+                </AreaChart>
+            </VBox>
+            
+            <!-- RECENT ENTRIES -->
+            <VBox styleClass="glass-surface" VBox.vgrow="ALWAYS">
+                <Label text="Recent Entries" styleClass="title-text" />
+                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="transparent-scroll">
+                    <VBox fx:id="recentEntriesContainer" spacing="15" />
+                </ScrollPane>
+            </VBox>
+            
+            <!-- AI INSIGHTS -->
+            <VBox styleClass="glass-surface">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="AI Insights" styleClass="title-text" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Button fx:id="refreshInsightsButton" styleClass="glass-button" text="↻" />
+                </HBox>
+                <Label fx:id="insightLabel" styleClass="body-text" wrapText="true" />
+            </VBox>
+        </VBox>
+    </right>
+    
+</BorderPane>

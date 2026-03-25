@@ -16,6 +16,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class PureMainController {
 
@@ -169,8 +171,20 @@ public class PureMainController {
                     
                     if (response.statusCode() == 200) {
                         sentimentContainer.setVisible(true);
-                        sentimentLabel.setText("Sentiment: Positive");
-                        sentimentScore.setText("Score: 0.85");
+                        // Parse real sentiment from API response
+                        try {
+                            ObjectMapper mapper = new ObjectMapper();
+                            @SuppressWarnings("unchecked")
+                            Map<String, Object> result = mapper.readValue(response.body(), Map.class);
+                            
+                            String sentiment = (String) result.get("sentiment");
+                            Double score = (Double) result.get("score");
+                            
+                            sentimentLabel.setText("Sentiment: " + (sentiment != null ? sentiment : "Unknown"));
+                            sentimentScore.setText("Score: " + (score != null ? String.format("%.2f", score) : "N/A"));
+                        } catch (Exception parseError) {
+                            showAlert("Error parsing sentiment response: " + parseError.getMessage());
+                        }
                     } else {
                         showAlert("Failed to analyze sentiment. Please try again.");
                     }
